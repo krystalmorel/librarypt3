@@ -1,29 +1,38 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Rating from "../componets/ui/Rating";
 import Price from "../componets/ui/Price";
 import Book from "../componets/ui/book";
 
-const BookInfo = ({ books }) => {
+const BookInfo = ({ books, addToCart, cart }) => {
   const { id } = useParams();
-  const book = book.find((book) => +book.id === +id);
+  const book = books.find((book) => +book.id === +id);
+
+  function addBookToCart(book) {
+    addToCart(book);
+  }
+
+  function bookExistsOnCart() {
+    return cart.find(book => +book.id === +id);
+  }
+
   return (
     <div id="books__body">
       <main id="books__main">
         <div className="books__container">
           <div className="row">
             <div className="book__selected--top">
-              <Link to="/book" className="book__link">
+              <Link to="/books" className="book__link">
                 <FontAwesomeIcon icon="arrow-left" />
               </Link>
-              <Link to="/book" className="book__link">
+              <Link to="/books" className="book__link">
                 <h2 className="book__selected--title--top">Books</h2>
               </Link>
             </div>
             <div className="book__selected">
               <figure className="book__selected--figure">
-                <img src={book.url} alt="" />
+                <img src={book.url} className="book__selected--img" alt="" />
               </figure>
               <div className="book__selected--description">
                 <h2 className="book__selected--title">{book.title}</h2>
@@ -49,7 +58,13 @@ const BookInfo = ({ books }) => {
                     nam at quia doloremque optio ex! Laudantium.
                   </p>
                 </div>
-                <button className="btn">Add to cart</button>
+                {bookExistsOnCart() ? (
+                  <button className="btn">Checkout</button>
+                ) : (
+                  <button className="btn" onClick={() => addBookToCart(book)}>
+                    Add to cart
+                  </button>
+                )}
               </div>
             </div>
           </div>
